@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            background-color: black;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 150px;
+        }
+
+        .game {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 20px;
+
+        }
+
+        .box {
+            box-shadow: 0px 0px 20px white;
+            width: 100px;
+            height: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: red;
+            border: 1px solid #fbf6f6;
+            cursor: pointer;
+        }
+
+        #resetButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 2px;
+            border: none;
+
+
+        }
+
+        #resetButton:hover {
+            cursor: pointer;
+            color: red;
+            box-shadow: 0px 0px 20px rgb(31, 228, 218);
+        }
+
+        #message {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="game" id="gameBoard">
+            <div class="box" data-index="0"></div>
+            <div class="box" data-index="1"></div>
+            <div class="box" data-index="2"></div>
+            <div class="box" data-index="3"></div>
+            <div class="box" data-index="4"></div>
+            <div class="box" data-index="5"></div>
+            <div class="box" data-index="6"></div>
+            <div class="box" data-index="7"></div>
+            <div class="box" data-index="8"></div>
+        </div>
+        <button id="resetButton">Reset</button>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const boxes = document.querySelectorAll(".box");
+            const resetButton = document.getElementById("resetButton");
+            const message = document.getElementById("message");
+            let currentPlayer = "X";
+            let gameActive = true;
+            const winningCombinations = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6]
+            ];
+
+            // Function to check for a winner
+            function checkWinner() {
+                for (let i = 0; i < winningCombinations.length; i++) {
+                    const [a, b, c] = winningCombinations[i];
+                    if (boxes[a].textContent &&
+                        boxes[a].textContent === boxes[b].textContent &&
+                        boxes[a].textContent === boxes[c].textContent) {
+                        gameActive = false;
+                        message.textContent = `Player ${boxes[a].textContent} wins!`;
+                        message.style.color = "red";
+                        return;
+                    }
+                }
+
+                // Check for a draw
+                const isDraw = Array.from(boxes).every(box => box.textContent === "X" || box.textContent === "O");
+                if (isDraw) {
+                    gameActive = false;
+                    message.textContent = "It's a draw!";
+                }
+            }
+
+            // Function to handle box click event
+            function handleBoxClick(event) {
+                const box = event.target;
+                if (gameActive && box.textContent !== "X" && box.textContent !== "O") {
+                    box.textContent = currentPlayer;
+                    checkWinner();
+                    currentPlayer = currentPlayer === "X" ? "O" : "X";
+                }
+            }
+
+            // Add click event listener to each box
+            boxes.forEach(box => {
+                box.addEventListener("click", handleBoxClick);
+            });
+
+            // Function to reset the game
+            function resetGame() {
+                boxes.forEach(box => {
+                    box.textContent = "";
+                });
+                currentPlayer = "X";
+                gameActive = true;
+                message.textContent = "";
+            }
+
+            // Add click event listener to reset button
+            resetButton.addEventListener("click", resetGame);
+        });
+    </script>
+</body>
+
+</html>
